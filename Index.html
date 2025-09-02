@@ -1,0 +1,1241 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IA aplicada a la Procuración de Fondos – Reforestamos México</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @media print {
+            .no-print { display: none !important; }
+            body { font-size: 12px; }
+            .section { page-break-inside: avoid; margin-bottom: 20px; }
+        }
+        .tooltip { position: relative; display: inline-block; cursor: help; }
+        .tooltip .tooltiptext {
+            visibility: hidden; width: 200px; background-color: #1f2937; color: white;
+            text-align: center; border-radius: 6px; padding: 5px; position: absolute;
+            z-index: 1; bottom: 125%; left: 50%; margin-left: -100px; opacity: 0;
+            transition: opacity 0.3s; font-size: 12px;
+        }
+        .tooltip:hover .tooltiptext { visibility: visible; opacity: 1; }
+        .progress-bar { transition: width 0.3s ease; }
+        .sidebar { transition: transform 0.3s ease; }
+        .sidebar-hidden { transform: translateX(-100%); }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans">
+    <!-- Barra de progreso -->
+    <div class="fixed top-0 left-0 w-full h-1 bg-gray-200 z-50 no-print">
+        <div class="progress-bar h-full bg-green-600" style="width: 11.11%;"></div>
+    </div>
+
+    <!-- Sidebar -->
+    <div id="sidebar" class="fixed left-0 top-0 h-full w-64 bg-white shadow-lg z-40 sidebar no-print">
+        <div class="p-4 border-b">
+            <h3 class="font-bold text-lg text-green-800">Navegación</h3>
+            <button id="closeSidebar" class="absolute top-4 right-4 text-gray-500 hover:text-gray-700">×</button>
+        </div>
+        <nav class="p-4">
+            <ul class="space-y-2" id="sidebarNav">
+                <!-- Se llena dinámicamente -->
+            </ul>
+        </nav>
+    </div>
+
+    <!-- Overlay -->
+    <div id="overlay" class="fixed inset-0 bg-black opacity-0 pointer-events-none z-30 no-print"></div>
+
+    <!-- Contenido principal -->
+    <div class="min-h-screen">
+        <!-- Controles de navegación -->
+        <div class="fixed top-4 left-4 z-20 no-print">
+            <button id="openSidebar" class="bg-green-600 text-white p-2 rounded-lg shadow hover:bg-green-700">
+                ☰ Menú
+            </button>
+        </div>
+
+        <!-- Secciones -->
+        <div id="sections">
+            <!-- Sección 1: Portada -->
+            <section class="section min-h-screen flex items-center justify-center bg-gradient-to-br from-green-600 to-green-800 text-white" data-title="Portada">
+                <div class="text-center max-w-4xl px-8">
+                    <h1 class="text-5xl font-bold mb-8">IA aplicada a la Procuración de Fondos</h1>
+                    <h2 class="text-2xl mb-12 text-green-100">Reforestamos México</h2>
+                    
+                    <div class="bg-white/10 backdrop-blur-sm rounded-xl p-8 mb-8">
+                        <h3 class="text-xl font-semibold mb-4">Objetivo del taller</h3>
+                        <p class="text-lg mb-6">Capacitar al equipo en el uso estratégico de herramientas de IA para potenciar las actividades de procuración de fondos, manteniendo siempre el criterio humano como elemento central.</p>
+                        
+                        <h4 class="font-semibold mb-4">Aprenderás:</h4>
+                        <ul class="text-left space-y-2 max-w-2xl mx-auto">
+                            <li>• Cómo la IA puede apoyar (no reemplazar) las tareas de fundraising</li>
+                            <li>• Mejores prácticas para crear prompts efectivos</li>
+                            <li>• Importancia de la calidad de datos y contexto</li>
+                            <li>• Ética y riesgos en el uso de IA</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="bg-yellow-400/20 border border-yellow-400 rounded-lg p-6">
+                        <p class="text-xl font-bold">⚠️ La IA es un apoyo, no un reemplazo</p>
+                        <p class="mt-2">La IA potencia el talento del equipo; no es un reemplazo.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Sección 2: IA en la vida cotidiana -->
+            <section class="section min-h-screen p-8 bg-white" data-title="IA en la vida cotidiana">
+                <div class="max-w-6xl mx-auto">
+                    <h2 class="text-4xl font-bold text-green-800 mb-8">IA en la vida cotidiana</h2>
+                    
+                    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                        <div class="bg-gray-50 rounded-lg p-6 shadow-sm">
+                            <h3 class="font-semibold text-lg mb-3 text-green-700">🔍 Búsqueda inteligente</h3>
+                            <p>Google, Bing con resultados contextuales y recomendaciones personalizadas.</p>
+                        </div>
+                        
+                        <div class="bg-gray-50 rounded-lg p-6 shadow-sm">
+                            <h3 class="font-semibold text-lg mb-3 text-green-700">📝 Transcripción y resumen</h3>
+                            <p>Convertir reuniones de Zoom en notas estructuradas automáticamente.</p>
+                        </div>
+                        
+                        <div class="bg-gray-50 rounded-lg p-6 shadow-sm">
+                            <h3 class="font-semibold text-lg mb-3 text-green-700">✏️ Asistentes de escritura</h3>
+                            <p>Grammarly, corrección automática, sugerencias de estilo.</p>
+                        </div>
+                        
+                        <div class="bg-gray-50 rounded-lg p-6 shadow-sm">
+                            <h3 class="font-semibold text-lg mb-3 text-green-700">👁️ Visión por computadora</h3>
+                            <p>Reconocimiento de texto en imágenes, clasificación automática de fotos.</p>
+                        </div>
+                        
+                        <div class="bg-gray-50 rounded-lg p-6 shadow-sm">
+                            <h3 class="font-semibold text-lg mb-3 text-green-700">🤖 Chatbots y asistentes</h3>
+                            <p>ChatGPT, Claude, asistentes virtuales para tareas específicas.</p>
+                        </div>
+                        
+                        <div class="bg-gray-50 rounded-lg p-6 shadow-sm">
+                            <h3 class="font-semibold text-lg mb-3 text-green-700">🎵 Creación de contenido</h3>
+                            <p>Generación de imágenes, música, y textos creativos.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-blue-50 border-l-4 border-blue-400 p-6 rounded-r-lg">
+                        <h3 class="font-semibold text-lg mb-3 text-blue-800">💡 Lo que NO es magia</h3>
+                        <p class="text-blue-700">La IA procesa patrones en datos históricos. No predice el futuro ni toma decisiones por nosotros. Requiere supervisión humana y datos de calidad para funcionar correctamente.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Sección 3: IA como apoyo, no reemplazo -->
+            <section class="section min-h-screen p-8 bg-green-50" data-title="IA como apoyo, no reemplazo">
+                <div class="max-w-6xl mx-auto">
+                    <h2 class="text-4xl font-bold text-green-800 mb-8">IA como apoyo, no reemplazo</h2>
+                    
+                    <div class="grid md:grid-cols-2 gap-8 mb-8">
+                        <div>
+                            <h3 class="text-2xl font-semibold mb-4 text-green-700">Lo que SÍ hace la IA</h3>
+                            <ul class="space-y-3">
+                                <li class="flex items-start space-x-2">
+                                    <span class="text-green-600">✓</span>
+                                    <span>Organiza ideas dispersas en estructuras coherentes</span>
+                                </li>
+                                <li class="flex items-start space-x-2">
+                                    <span class="text-green-600">✓</span>
+                                    <span>Acelera la creación de borradores iniciales</span>
+                                </li>
+                                <li class="flex items-start space-x-2">
+                                    <span class="text-green-600">✓</span>
+                                    <span>Analiza patrones en grandes volúmenes de datos</span>
+                                </li>
+                                <li class="flex items-start space-x-2">
+                                    <span class="text-green-600">✓</span>
+                                    <span>Sugiere enfoques alternativos</span>
+                                </li>
+                                <li class="flex items-start space-x-2">
+                                    <span class="text-green-600">✓</span>
+                                    <span>Automatiza tareas repetitivas</span>
+                                </li>
+                            </ul>
+                        </div>
+                        
+                        <div>
+                            <h3 class="text-2xl font-semibold mb-4 text-red-700">Lo que NO debe hacer</h3>
+                            <ul class="space-y-3">
+                                <li class="flex items-start space-x-2">
+                                    <span class="text-red-600">✗</span>
+                                    <span>Tomar decisiones estratégicas finales</span>
+                                </li>
+                                <li class="flex items-start space-x-2">
+                                    <span class="text-red-600">✗</span>
+                                    <span>Definir la estrategia de fundraising</span>
+                                </li>
+                                <li class="flex items-start space-x-2">
+                                    <span class="text-red-600">✗</span>
+                                    <span>Reemplazar la relación humana con donantes</span>
+                                </li>
+                                <li class="flex items-start space-x-2">
+                                    <span class="text-red-600">✗</span>
+                                    <span>Validar información crítica sin supervisión</span>
+                                </li>
+                                <li class="flex items-start space-x-2">
+                                    <span class="text-red-600">✗</span>
+                                    <span>Manejar datos sensibles sin protección</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-lg shadow-md p-6">
+                        <h3 class="text-xl font-semibold mb-4 text-green-800">📋 Buenas prácticas</h3>
+                        <div class="grid md:grid-cols-3 gap-6">
+                            <div class="text-center">
+                                <div class="bg-green-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-3">
+                                    <span class="text-2xl">🎯</span>
+                                </div>
+                                <h4 class="font-semibold mb-2">Curaduría</h4>
+                                <p class="text-sm text-gray-600">Revisa y selecciona los mejores resultados</p>
+                            </div>
+                            
+                            <div class="text-center">
+                                <div class="bg-green-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-3">
+                                    <span class="text-2xl">✅</span>
+                                </div>
+                                <h4 class="font-semibold mb-2">Verificación</h4>
+                                <p class="text-sm text-gray-600">Confirma la precisión de la información</p>
+                            </div>
+                            
+                            <div class="text-center">
+                                <div class="bg-green-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-3">
+                                    <span class="text-2xl">📝</span>
+                                </div>
+                                <h4 class="font-semibold mb-2">Trazabilidad</h4>
+                                <p class="text-sm text-gray-600">Documenta el proceso y las fuentes</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Sección 4: Universo de datos -->
+            <section class="section min-h-screen p-8 bg-white" data-title="Universo de datos: cómo alimentar a la IA">
+                <div class="max-w-6xl mx-auto">
+                    <h2 class="text-4xl font-bold text-green-800 mb-8">Universo de datos: cómo alimentar a la IA</h2>
+                    
+                    <div class="grid md:grid-cols-2 gap-8 mb-8">
+                        <div class="bg-blue-50 rounded-lg p-6">
+                            <h3 class="text-xl font-semibold mb-4 text-blue-800">🏗️ Estructura</h3>
+                            <p class="mb-4">Los datos deben estar organizados de forma lógica y consistente.</p>
+                            <ul class="text-sm space-y-1 text-blue-700">
+                                <li>• Categorías claras</li>
+                                <li>• Formato uniforme</li>
+                                <li>• Jerarquías definidas</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="bg-purple-50 rounded-lg p-6">
+                            <h3 class="text-xl font-semibold mb-4 text-purple-800">🎯 Contexto</h3>
+                            <p class="mb-4">La información debe incluir el "por qué" y "para qué".</p>
+                            <ul class="text-sm space-y-1 text-purple-700">
+                                <li>• Objetivo del proyecto</li>
+                                <li>• Audiencia objetivo</li>
+                                <li>• Restricciones importantes</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="bg-green-50 rounded-lg p-6">
+                            <h3 class="text-xl font-semibold mb-4 text-green-800">📊 Formato</h3>
+                            <p class="mb-4">Presentar la información de manera que la IA pueda procesarla eficientemente.</p>
+                            <ul class="text-sm space-y-1 text-green-700">
+                                <li>• Texto claro y directo</li>
+                                <li>• Números específicos</li>
+                                <li>• Ejemplos concretos</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="bg-orange-50 rounded-lg p-6">
+                            <h3 class="text-xl font-semibold mb-4 text-orange-800">🏷️ Etiquetas</h3>
+                            <p class="mb-4">Clasificar y etiquetar la información para facilitar su uso.</p>
+                            <ul class="text-sm space-y-1 text-orange-700">
+                                <li>• Palabras clave relevantes</li>
+                                <li>• Metadatos descriptivos</li>
+                                <li>• Referencias cruzadas</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <!-- Acordeón de Checklist -->
+                    <div class="bg-white border rounded-lg shadow-sm mb-8">
+                        <button class="accordion-btn w-full text-left p-4 font-semibold text-lg text-green-800 border-b hover:bg-gray-50" data-target="checklist">
+                            📋 Checklist de datos útiles para IA ▼
+                        </button>
+                        <div id="checklist" class="accordion-content hidden p-6">
+                            <div class="grid md:grid-cols-2 gap-6">
+                                <div class="space-y-3">
+                                    <div class="flex items-start space-x-2">
+                                        <span class="text-green-600 mt-1">□</span>
+                                        <span><strong>Objetivo claro:</strong> ¿Qué buscas lograr específicamente?</span>
+                                    </div>
+                                    <div class="flex items-start space-x-2">
+                                        <span class="text-green-600 mt-1">□</span>
+                                        <span><strong>Audiencia/sector:</strong> ¿A quién te diriges? ¿Qué industria?</span>
+                                    </div>
+                                    <div class="flex items-start space-x-2">
+                                        <span class="text-green-600 mt-1">□</span>
+                                        <span><strong>Métricas esperadas:</strong> ¿Cómo medirás el éxito?</span>
+                                    </div>
+                                </div>
+                                <div class="space-y-3">
+                                    <div class="flex items-start space-x-2">
+                                        <span class="text-green-600 mt-1">□</span>
+                                        <span><strong>Restricciones/tono:</strong> ¿Hay límites legales, de estilo o plazos?</span>
+                                    </div>
+                                    <div class="flex items-start space-x-2">
+                                        <span class="text-green-600 mt-1">□</span>
+                                        <span><strong>Beneficios mutuos:</strong> ¿Cómo se benefician empresa-comunidad-ambiente?</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Módulo de calidad de contexto -->
+                    <div class="bg-gray-50 rounded-lg p-6">
+                        <h3 class="text-xl font-semibold mb-4 text-gray-800">🎯 Evaluador de calidad de contexto</h3>
+                        <p class="mb-4 text-gray-600">Pega tu contexto aquí y evalúa su calidad para uso con IA:</p>
+                        
+                        <textarea id="contextInput" class="w-full h-32 p-3 border rounded-lg mb-4" placeholder="Ejemplo: Necesitamos un correo para empresas del sector tecnología sobre nuestro proyecto de reforestación urbana en CDMX. Queremos conseguir $50,000 pesos para plantar 200 árboles nativos en 3 escuelas..."></textarea>
+                        
+                        <div class="mb-4">
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="text-sm font-medium">Calidad del contexto:</span>
+                                <span id="qualityScore" class="text-lg font-bold text-gray-800">0/100</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-3">
+                                <div id="qualityBar" class="bg-gradient-to-r from-red-500 via-yellow-500 to-green-500 h-3 rounded-full transition-all duration-500" style="width: 0%"></div>
+                            </div>
+                        </div>
+                        
+                        <div id="qualityTips" class="space-y-2">
+                            <!-- Tips se llenan dinámicamente -->
+                        </div>
+                        
+                        <button id="evaluateContext" class="mt-4 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
+                            Evaluar contexto
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Sección 5: Analogía fundamental -->
+            <section class="section min-h-screen flex items-center justify-center bg-gradient-to-br from-red-100 to-orange-100" data-title="Analogía fundamental">
+                <div class="max-w-4xl mx-auto text-center p-8">
+                    <h2 class="text-4xl font-bold text-red-800 mb-12">⚠️ Analogía fundamental</h2>
+                    
+                    <div class="space-y-8 mb-12">
+                        <div class="bg-red-200 border-2 border-red-400 rounded-xl p-8">
+                            <h3 class="text-2xl font-bold text-red-800 mb-4">Datos basura + Buen modelo de IA = Resultados basura</h3>
+                        </div>
+                        
+                        <div class="text-4xl text-gray-400">+</div>
+                        
+                        <div class="bg-red-200 border-2 border-red-400 rounded-xl p-8">
+                            <h3 class="text-2xl font-bold text-red-800 mb-4">Buenos datos + Modelo basura = Resultados basura</h3>
+                        </div>
+                        
+                        <div class="text-4xl text-gray-400">=</div>
+                        
+                        <div class="bg-green-200 border-2 border-green-500 rounded-xl p-8">
+                            <h3 class="text-2xl font-bold text-green-800 mb-4">Buenos datos + Buen modelo = Buenos resultados</h3>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-yellow-100 border-l-4 border-yellow-500 p-6 rounded-r-xl">
+                        <p class="text-xl font-semibold text-yellow-800">
+                            Si no hay buen proceso y datos de calidad, la IA se aleja del objetivo.
+                        </p>
+                        <p class="mt-4 text-yellow-700">
+                            La IA puede inventar si el contexto es pobre. Mejora tus datos antes de pedir un resultado.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Sección 6: Qué es un prompt -->
+            <section class="section min-h-screen p-8 bg-white" data-title="Qué es un prompt">
+                <div class="max-w-6xl mx-auto">
+                    <h2 class="text-4xl font-bold text-green-800 mb-8">¿Qué es un prompt?</h2>
+                    
+                    <div class="bg-blue-50 rounded-lg p-6 mb-8">
+                        <p class="text-lg text-blue-800">
+                            Un <strong>prompt</strong> es la instrucción que le das a la IA para obtener el resultado que necesitas. 
+                            Es como una receta: entre más específica y completa sea, mejor será el resultado.
+                            <span class="tooltip">❓
+                                <span class="tooltiptext">Un buen prompt puede ser la diferencia entre obtener contenido genérico o una respuesta altamente útil y personalizada.</span>
+                            </span>
+                        </p>
+                    </div>
+                    
+                    <h3 class="text-2xl font-semibold mb-6 text-green-700">🧬 Anatomía de un buen prompt</h3>
+                    
+                    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                        <div class="bg-purple-50 border-l-4 border-purple-500 p-4 rounded-r-lg">
+                            <h4 class="font-semibold text-purple-800 mb-2">🎯 Objetivo</h4>
+                            <p class="text-sm text-purple-700">Qué quieres lograr específicamente</p>
+                        </div>
+                        
+                        <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-r-lg">
+                            <h4 class="font-semibold text-blue-800 mb-2">👥 Audiencia</h4>
+                            <p class="text-sm text-blue-700">A quién va dirigido el resultado</p>
+                        </div>
+                        
+                        <div class="bg-green-50 border-l-4 border-green-500 p-4 rounded-r-lg">
+                            <h4 class="font-semibold text-green-800 mb-2">📝 Formato</h4>
+                            <p class="text-sm text-green-700">Cómo quieres que se presente</p>
+                        </div>
+                        
+                        <div class="bg-yellow-50 border-l-4 border-yellow-500 p-4 rounded-r-lg">
+                            <h4 class="font-semibold text-yellow-800 mb-2">🎨 Estilo/Tono</h4>
+                            <p class="text-sm text-yellow-700">Formal, casual, técnico, etc.</p>
+                        </div>
+                        
+                        <div class="bg-red-50 border-l-4 border-red-500 p-4 rounded-r-lg">
+                            <h4 class="font-semibold text-red-800 mb-2">📊 Datos concretos</h4>
+                            <p class="text-sm text-red-700">Información específica y verificable</p>
+                        </div>
+                        
+                        <div class="bg-gray-50 border-l-4 border-gray-500 p-4 rounded-r-lg">
+                            <h4 class="font-semibold text-gray-800 mb-2">⚖️ Restricciones</h4>
+                            <p class="text-sm text-gray-700">Límites legales, éticos, de tiempo</p>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white border rounded-lg shadow-sm p-6">
+                        <h3 class="text-xl font-semibold mb-4 text-green-800">📋 Checklist para un buen prompt</h3>
+                        <div class="bg-gray-50 p-4 rounded border text-sm font-mono" id="promptChecklist">
+□ ¿Definí claramente el objetivo?
+□ ¿Especifiqué la audiencia target?
+□ ¿Indiqué el formato de salida deseado?
+□ ¿Establecí el tono y estilo apropiado?
+□ ¿Incluí datos concretos y específicos?
+□ ¿Mencioné indicadores de éxito?
+□ ¿Declaro restricciones importantes?
+                        </div>
+                        <button onclick="copyToClipboard('promptChecklist')" class="mt-3 bg-green-600 text-white px-4 py-2 rounded text-sm hover:bg-green-700">
+                            📋 Copiar checklist
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Sección 7: Ejercicio interactivo -->
+            <section class="section min-h-screen p-8 bg-green-50" data-title="Ejercicio: Mal prompt vs Buen prompt">
+                <div class="max-w-6xl mx-auto">
+                    <h2 class="text-4xl font-bold text-green-800 mb-8">🎯 Ejercicio: Mal prompt vs Buen prompt</h2>
+                    
+                    <div class="grid md:grid-cols-2 gap-8 mb-8">
+                        <!-- Mal prompt -->
+                        <div class="bg-red-50 border-2 border-red-200 rounded-lg p-6">
+                            <h3 class="text-xl font-semibold text-red-800 mb-4">❌ MAL PROMPT</h3>
+                            <div class="bg-white p-4 rounded border text-sm font-mono mb-4" id="badPrompt">
+Escríbeme un correo para pedir donación a una empresa. Que suene profesional.
+                            </div>
+                            <button onclick="copyToClipboard('badPrompt')" class="bg-red-600 text-white px-4 py-2 rounded text-sm hover:bg-red-700">
+                                📋 Copiar
+                            </button>
+                            
+                            <div class="mt-4 text-sm text-red-700">
+                                <p><strong>Problemas:</strong></p>
+                                <ul class="list-disc list-inside space-y-1">
+                                    <li>No define audiencia específica</li>
+                                    <li>No menciona el proyecto</li>
+                                    <li>No incluye datos concretos</li>
+                                    <li>No especifica resultados esperados</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <!-- Buen prompt -->
+                        <div class="bg-green-50 border-2 border-green-200 rounded-lg p-6">
+                            <h3 class="text-xl font-semibold text-green-800 mb-4">✅ BUEN PROMPT</h3>
+                            <div class="bg-white p-4 rounded border text-sm font-mono mb-4 max-h-64 overflow-y-auto" id="goodPrompt">
+Eres asesor de procuración de fondos en una ONG ambiental (Reforestamos México).
+
+Objetivo: redactar un correo de prospección inicial (120–150 palabras) a una empresa del sector alimentos interesada en biodiversidad y cadena de valor responsable.
+
+Datos:
+- Proyecto: Aviturismo comunitario en el corredor Izta-Popo; conservación activa, economía local y educación ambiental.
+- Indicadores: # guías capacitados, # talleres, # visitantes, % ingresos comunitarios, especies focales monitoreadas.
+- Beneficios para la empresa: indicadores ESG verificables, deducibilidad fiscal, reportabilidad, sin requerir voluntariado.
+- Tono: claro, directo, sin promesas absolutas; invita a llamada breve.
+
+Entregable: asunto y cuerpo del correo; incluye 2 indicadores posibles y una frase de valor mutuo.
+
+Responde en español de México.
+                            </div>
+                            <button onclick="copyToClipboard('goodPrompt')" class="bg-green-600 text-white px-4 py-2 rounded text-sm hover:bg-green-700">
+                                📋 Copiar
+                            </button>
+                            
+                            <div class="mt-4 text-sm text-green-700">
+                                <p><strong>Fortalezas:</strong></p>
+                                <ul class="list-disc list-inside space-y-1">
+                                    <li>Audiencia específica definida</li>
+                                    <li>Proyecto concreto con datos</li>
+                                    <li>Beneficios claros para ambas partes</li>
+                                    <li>Formato y tono especificados</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Simulador de datos -->
+                    <div class="bg-white rounded-lg shadow-md p-6">
+                        <h3 class="text-xl font-semibold mb-4 text-gray-800">🔄 Cambia los datos de entrada</h3>
+                        <p class="mb-4 text-gray-600">Prueba con tus propios datos para generar un prompt personalizado:</p>
+                        
+                        <div class="grid md:grid-cols-2 gap-6 mb-6">
+                            <div>
+                                <label class="block text-sm font-medium mb-2">Tu contexto:</label>
+                                <textarea id="customContext" class="w-full h-32 p-3 border rounded-lg text-sm" placeholder="Ejemplo: Proyecto de huertos urbanos en escuelas de Guadalajara, dirigido a empresas del sector retail que buscan impacto social verificable..."></textarea>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium mb-2">Borrador generado:</label>
+                                <div id="generatedDraft" class="w-full h-32 p-3 bg-gray-50 border rounded-lg text-sm overflow-y-auto">
+                                    <em class="text-gray-500">El borrador aparecerá aquí...</em>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <button id="generateDraft" class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">
+                            🎯 Generar borrador simulado
+                        </button>
+                        
+                        <div id="contextWarnings" class="mt-4 space-y-2">
+                            <!-- Advertencias aparecerán aquí -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Sección 8: IA generativa -->
+            <section class="section min-h-screen p-8 bg-white" data-title="IA generativa">
+                <div class="max-w-6xl mx-auto">
+                    <h2 class="text-4xl font-bold text-green-800 mb-8">🎨 IA generativa (texto, imagen, audio, código)</h2>
+                    
+                    <div class="grid md:grid-cols-2 gap-8 mb-8">
+                        <div>
+                            <h3 class="text-2xl font-semibold mb-6 text-green-700">✅ Cuándo SÍ usar en fundraising</h3>
+                            <div class="space-y-4">
+                                <div class="bg-green-50 border-l-4 border-green-500 p-4 rounded-r-lg">
+                                    <h4 class="font-semibold text-green-800 mb-2">📧 Correos de prospección</h4>
+                                    <p class="text-sm text-green-700">Borradores personalizados por sector e intereses específicos</p>
+                                </div>
+                                
+                                <div class="bg-green-50 border-l-4 border-green-500 p-4 rounded-r-lg">
+                                    <h4 class="font-semibold text-green-800 mb-2">📞 Guiones de llamada</h4>
+                                    <p class="text-sm text-green-700">Estructuras flexibles adaptadas al perfil del donante potencial</p>
+                                </div>
+                                
+                                <div class="bg-green-50 border-l-4 border-green-500 p-4 rounded-r-lg">
+                                    <h4 class="font-semibold text-green-800 mb-2">📊 Resúmenes de reportes</h4>
+                                    <p class="text-sm text-green-700">Síntesis ejecutivas de impacto para diferentes audiencias</p>
+                                </div>
+                                
+                                <div class="bg-green-50 border-l-4 border-green-500 p-4 rounded-r-lg">
+                                    <h4 class="font-semibold text-green-800 mb-2">📝 Borradores de propuestas</h4>
+                                    <p class="text-sm text-green-700">Estructura inicial basada en lineamientos específicos del fondo</p>
+                                </div>
+                                
+                                <div class="bg-green-50 border-l-4 border-green-500 p-4 rounded-r-lg">
+                                    <h4 class="font-semibold text-green-800 mb-2">🎨 Material visual de apoyo</h4>
+                                    <p class="text-sm text-green-700">Infografías, diagramas y presentaciones (evitando greenwashing)
+                                    <span class="tooltip">❓
+                                        <span class="tooltiptext">Greenwashing: Práctica de dar una falsa impresión sobre qué tan ambientalmente responsable es una empresa o sus productos.</span>
+                                    </span>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <h3 class="text-2xl font-semibold mb-6 text-red-700">❌ Cuándo NO usar</h3>
+                            <div class="space-y-4">
+                                <div class="bg-red-50 border-l-4 border-red-500 p-4 rounded-r-lg">
+                                    <h4 class="font-semibold text-red-800 mb-2">📈 Métricas sensibles sin verificación</h4>
+                                    <p class="text-sm text-red-700">Los números de impacto deben ser siempre validados por el equipo técnico</p>
+                                </div>
+                                
+                                <div class="bg-red-50 border-l-4 border-red-500 p-4 rounded-r-lg">
+                                    <h4 class="font-semibold text-red-800 mb-2">🎯 Promesas absolutas</h4>
+                                    <p class="text-sm text-red-700">"Garantizamos que...", "Eliminaremos completamente..." sin evidencia sólida</p>
+                                </div>
+                                
+                                <div class="bg-red-50 border-l-4 border-red-500 p-4 rounded-r-lg">
+                                    <h4 class="font-semibold text-red-800 mb-2">⚖️ Temas legales sin revisión</h4>
+                                    <p class="text-sm text-red-700">Contratos, acuerdos fiscales, cumplimiento regulatorio</p>
+                                </div>
+                                
+                                <div class="bg-red-50 border-l-4 border-red-500 p-4 rounded-r-lg">
+                                    <h4 class="font-semibold text-red-800 mb-2">🔒 Información confidencial</h4>
+                                    <p class="text-sm text-red-700">Datos de donantes, estrategias internas, información financiera sensible</p>
+                                </div>
+                                
+                                <div class="bg-red-50 border-l-4 border-red-500 p-4 rounded-r-lg">
+                                    <h4 class="font-semibold text-red-800 mb-2">🤝 Decisiones estratégicas finales</h4>
+                                    <p class="text-sm text-red-700">Selección de donantes prioritarios, aprobación de propuestas, negociaciones</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-6">
+                        <h3 class="text-lg font-semibold mb-3 text-yellow-800">⚠️ Recuerda siempre</h3>
+                        <p class="text-yellow-700 mb-2">
+                            <strong>"No uses IA para promesas absolutas; verifica con evidencia."</strong>
+                        </p>
+                        <p class="text-yellow-700">
+                            La IA es excelente para generar ideas y borradores, pero toda información crítica debe ser validada por expertos humanos antes de compartirse con donantes potenciales.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Sección 9: Ética y riesgos -->
+            <section class="section min-h-screen p-8 bg-gray-50" data-title="Ética y riesgos">
+                <div class="max-w-6xl mx-auto">
+                    <h2 class="text-4xl font-bold text-red-800 mb-8">⚠️ Ética y riesgos</h2>
+                    
+                    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                        <div class="bg-white rounded-lg shadow-md p-6">
+                            <div class="text-center mb-4">
+                                <span class="text-4xl">🤖</span>
+                                <h3 class="text-lg font-semibold text-gray-800 mt-2">Hallucinations</h3>
+                            </div>
+                            <p class="text-sm text-gray-600">La IA puede generar información que parece real pero es completamente falsa.</p>
+                            <div class="tooltip mt-2">❓
+                                <span class="tooltiptext">Las "alucinaciones" ocurren cuando la IA genera contenido sin base en datos reales, especialmente cuando tiene contexto limitado.</span>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-white rounded-lg shadow-md p-6">
+                            <div class="text-center mb-4">
+                                <span class="text-4xl">⚖️</span>
+                                <h3 class="text-lg font-semibold text-gray-800 mt-2">Sesgos</h3>
+                            </div>
+                            <p class="text-sm text-gray-600">Los modelos pueden reflejar prejuicios presentes en sus datos de entrenamiento.</p>
+                        </div>
+                        
+                        <div class="bg-white rounded-lg shadow-md p-6">
+                            <div class="text-center mb-4">
+                                <span class="text-4xl">🔒</span>
+                                <h3 class="text-lg font-semibold text-gray-800 mt-2">Privacidad</h3>
+                            </div>
+                            <p class="text-sm text-gray-600">Los datos que compartes pueden ser almacenados o utilizados para entrenar modelos.</p>
+                        </div>
+                        
+                        <div class="bg-white rounded-lg shadow-md p-6">
+                            <div class="text-center mb-4">
+                                <span class="text-4xl">🛡️</span>
+                                <h3 class="text-lg font-semibold text-gray-800 mt-2">Seguridad</h3>
+                            </div>
+                            <p class="text-sm text-gray-600">Riesgo de exposición accidental de información confidencial o sensible.</p>
+                        </div>
+                        
+                        <div class="bg-white rounded-lg shadow-md p-6">
+                            <div class="text-center mb-4">
+                                <span class="text-4xl">📋</span>
+                                <h3 class="text-lg font-semibold text-gray-800 mt-2">Cumplimiento</h3>
+                            </div>
+                            <p class="text-sm text-gray-600">Asegurar que el contenido generado cumple con regulaciones y políticas.</p>
+                        </div>
+                        
+                        <div class="bg-white rounded-lg shadow-md p-6">
+                            <div class="text-center mb-4">
+                                <span class="text-4xl">🎯</span>
+                                <h3 class="text-lg font-semibold text-gray-800 mt-2">Transparencia</h3>
+                            </div>
+                            <p class="text-sm text-gray-600">Ser claro sobre cuándo y cómo se utiliza IA en las comunicaciones.</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Riesgos específicos en fundraising -->
+                    <div class="bg-red-50 border border-red-200 rounded-lg p-6 mb-8">
+                        <h3 class="text-xl font-semibold mb-4 text-red-800">🚨 Riesgos comunes en fundraising</h3>
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div class="space-y-3">
+                                <div class="flex items-start space-x-2">
+                                    <span class="text-red-600 mt-1">⚠️</span>
+                                    <div>
+                                        <strong class="text-red-800">Sobre-prometer impacto</strong>
+                                        <p class="text-sm text-red-700">Generar promesas irreales sobre resultados ambientales</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-start space-x-2">
+                                    <span class="text-red-600 mt-1">⚠️</span>
+                                    <div>
+                                        <strong class="text-red-800">Sesgo hacia grandes empresas</strong>
+                                        <p class="text-sm text-red-700">Enfocar propuestas solo en corporativos, ignorando PYMES</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="space-y-3">
+                                <div class="flex items-start space-x-2">
+                                    <span class="text-red-600 mt-1">⚠️</span>
+                                    <div>
+                                        <strong class="text-red-800">Fuga de datos</strong>
+                                        <p class="text-sm text-red-700">Exponer información sensible de donantes en prompts</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-start space-x-2">
+                                    <span class="text-red-600 mt-1">⚠️</span>
+                                    <div>
+                                        <strong class="text-red-800">Métricas inventadas</strong>
+                                        <p class="text-sm text-red-700">Presentar números de impacto no verificados</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Contramedidas -->
+                    <div class="bg-green-50 border border-green-200 rounded-lg p-6">
+                        <h3 class="text-xl font-semibold mb-4 text-green-800">✅ Contramedidas</h3>
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div class="space-y-3">
+                                <div class="flex items-start space-x-2">
+                                    <span class="text-green-600 mt-1">✓</span>
+                                    <div>
+                                        <strong class="text-green-800">Verificación humana</strong>
+                                        <p class="text-sm text-green-700">Siempre revisar y validar contenido antes de enviar</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-start space-x-2">
+                                    <span class="text-green-600 mt-1">✓</span>
+                                    <div>
+                                        <strong class="text-green-800">Fuentes citables</strong>
+                                        <p class="text-sm text-green-700">Basar todas las afirmaciones en datos verificables</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="space-y-3">
+                                <div class="flex items-start space-x-2">
+                                    <span class="text-green-600 mt-1">✓</span>
+                                    <div>
+                                        <strong class="text-green-800">Control de acceso</strong>
+                                        <p class="text-sm text-green-700">Limitar quién puede usar IA con datos sensibles</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-start space-x-2">
+                                    <span class="text-green-600 mt-1">✓</span>
+                                    <div>
+                                        <strong class="text-green-800">Anonimización</strong>
+                                        <p class="text-sm text-green-700">Eliminar datos personales en ejemplos y pruebas</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Controles de navegación inferior -->
+        <div class="fixed bottom-4 left-1/2 transform -translate-x-1/2 z-20 no-print">
+            <div class="bg-white rounded-full shadow-lg px-6 py-3 flex items-center space-x-4">
+                <button id="prevBtn" class="bg-gray-200 text-gray-600 px-4 py-2 rounded-full hover:bg-gray-300 disabled:opacity-50">
+                    ← Anterior
+                </button>
+                <span id="sectionCounter" class="text-sm font-medium text-gray-600">1 / 9</span>
+                <button id="nextBtn" class="bg-green-600 text-white px-4 py-2 rounded-full hover:bg-green-700 disabled:opacity-50">
+                    Siguiente →
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Variables globales
+        let currentSection = 0;
+        const sections = document.querySelectorAll('.section');
+        const totalSections = sections.length;
+
+        // Inicialización
+        document.addEventListener('DOMContentLoaded', function() {
+            initNavigation();
+            initSidebar();
+            initAccordions();
+            initContextEvaluator();
+            initDraftGenerator();
+            initKeyboardShortcuts();
+            showSection(0);
+        });
+
+        // Navegación
+        function initNavigation() {
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            const sectionCounter = document.getElementById('sectionCounter');
+
+            prevBtn.addEventListener('click', () => navigateSection(-1));
+            nextBtn.addEventListener('click', () => navigateSection(1));
+
+            updateNavButtons();
+        }
+
+        function navigateSection(direction) {
+            const newSection = currentSection + direction;
+            if (newSection >= 0 && newSection < totalSections) {
+                showSection(newSection);
+            }
+        }
+
+        function showSection(index) {
+            sections.forEach(section => section.classList.add('hidden'));
+            sections[index].classList.remove('hidden');
+            currentSection = index;
+            updateNavButtons();
+            updateProgressBar();
+            updateSectionCounter();
+        }
+
+        function updateNavButtons() {
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            
+            prevBtn.disabled = currentSection === 0;
+            nextBtn.disabled = currentSection === totalSections - 1;
+        }
+
+        function updateProgressBar() {
+            const progress = ((currentSection + 1) / totalSections) * 100;
+            document.querySelector('.progress-bar').style.width = progress + '%';
+        }
+
+        function updateSectionCounter() {
+            document.getElementById('sectionCounter').textContent = `${currentSection + 1} / ${totalSections}`;
+        }
+
+        // Sidebar
+        function initSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const openSidebar = document.getElementById('openSidebar');
+            const closeSidebar = document.getElementById('closeSidebar');
+            const overlay = document.getElementById('overlay');
+            const sidebarNav = document.getElementById('sidebarNav');
+
+            // Generar navegación
+            sections.forEach((section, index) => {
+                const title = section.getAttribute('data-title');
+                const li = document.createElement('li');
+                li.innerHTML = `
+                    <button onclick="goToSection(${index})" class="w-full text-left px-3 py-2 rounded hover:bg-green-100 text-sm ${index === currentSection ? 'bg-green-100 font-semibold' : ''}">
+                        ${index + 1}. ${title}
+                    </button>
+                `;
+                sidebarNav.appendChild(li);
+            });
+
+            openSidebar.addEventListener('click', () => {
+                sidebar.classList.remove('sidebar-hidden');
+                overlay.classList.remove('pointer-events-none');
+                overlay.classList.add('opacity-50');
+            });
+
+            const closeSidebarFn = () => {
+                sidebar.classList.add('sidebar-hidden');
+                overlay.classList.add('pointer-events-none');
+                overlay.classList.remove('opacity-50');
+            };
+
+            closeSidebar.addEventListener('click', closeSidebarFn);
+            overlay.addEventListener('click', closeSidebarFn);
+        }
+
+        function goToSection(index) {
+            showSection(index);
+            document.getElementById('sidebar').classList.add('sidebar-hidden');
+            document.getElementById('overlay').classList.add('pointer-events-none');
+            document.getElementById('overlay').classList.remove('opacity-50');
+        }
+
+        // Acordeones
+        function initAccordions() {
+            const accordionBtns = document.querySelectorAll('.accordion-btn');
+            accordionBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const targetId = btn.getAttribute('data-target');
+                    const content = document.getElementById(targetId);
+                    const isHidden = content.classList.contains('hidden');
+                    
+                    content.classList.toggle('hidden', !isHidden);
+                    btn.innerHTML = btn.innerHTML.replace(isHidden ? '▼' : '▲', isHidden ? '▲' : '▼');
+                });
+            });
+        }
+
+        // Evaluador de contexto
+        function initContextEvaluator() {
+            const evaluateBtn = document.getElementById('evaluateContext');
+            const contextInput = document.getElementById('contextInput');
+            
+            evaluateBtn.addEventListener('click', evaluateContext);
+            contextInput.addEventListener('input', debounce(evaluateContext, 500));
+        }
+
+        function evaluateContext() {
+            const context = document.getElementById('contextInput').value;
+            const qualityScore = document.getElementById('qualityScore');
+            const qualityBar = document.getElementById('qualityBar');
+            const qualityTips = document.getElementById('qualityTips');
+
+            let score = 0;
+            const tips = [];
+
+            // Reglas heurísticas
+            if (context.toLowerCase().includes('objetivo') || context.toLowerCase().includes('meta') || context.toLowerCase().includes('busca')) {
+                score += 20;
+            } else {
+                tips.push('💡 Incluye un objetivo claro (¿qué buscas lograr?)');
+            }
+
+            if (context.toLowerCase().includes('empresa') || context.toLowerCase().includes('sector') || context.toLowerCase().includes('audiencia')) {
+                score += 20;
+            } else {
+                tips.push('💡 Define tu audiencia/sector target');
+            }
+
+            if (/\d/.test(context) || context.toLowerCase().includes('indicador') || context.toLowerCase().includes('métrica')) {
+                score += 20;
+            } else {
+                tips.push('💡 Agrega métricas o indicadores específicos');
+            }
+
+            if (context.toLowerCase().includes('tono') || context.toLowerCase().includes('estilo') || context.toLowerCase().includes('formal')) {
+                score += 20;
+            } else {
+                tips.push('💡 Especifica el tono o estilo deseado');
+            }
+
+            if (context.toLowerCase().includes('beneficio') || context.toLowerCase().includes('mutuo') || context.toLowerCase().includes('comunidad')) {
+                score += 20;
+            } else {
+                tips.push('💡 Menciona beneficios mutuos (empresa-comunidad-ambiente)');
+            }
+
+            qualityScore.textContent = `${score}/100`;
+            qualityBar.style.width = `${score}%`;
+            
+            qualityTips.innerHTML = tips.map(tip => `<div class="text-sm text-orange-600">${tip}</div>`).join('');
+        }
+
+        // Generador de borrador
+        function initDraftGenerator() {
+            const generateBtn = document.getElementById('generateDraft');
+            generateBtn.addEventListener('click', generateDraft);
+        }
+
+        function generateDraft() {
+            const customContext = document.getElementById('customContext').value;
+            const generatedDraft = document.getElementById('generatedDraft');
+            const contextWarnings = document.getElementById('contextWarnings');
+
+            if (!customContext.trim()) {
+                generatedDraft.innerHTML = '<em class="text-red-500">Por favor, ingresa un contexto para generar el borrador.</em>';
+                return;
+            }
+
+            // Análisis simple de contexto
+            const hasProject = customContext.toLowerCase().includes('proyecto');
+            const hasAudience = customContext.toLowerCase().includes('empresa') || customContext.toLowerCase().includes('sector');
+            const hasNumbers = /\d/.test(customContext);
+
+            let warnings = [];
+            let draftQuality = 'genérico';
+
+            if (!hasProject) warnings.push('⚠️ No detecté información específica del proyecto');
+            if (!hasAudience) warnings.push('⚠️ No hay audiencia claramente definida');
+            if (!hasNumbers) warnings.push('⚠️ Faltan datos concretos o métricas');
+
+            if (warnings.length === 0) draftQuality = 'específico y detallado';
+            else if (warnings.length === 1) draftQuality = 'bueno pero mejorable';
+
+            // Borrador simulado
+            let draft = '';
+            if (draftQuality === 'específico y detallado') {
+                draft = `**Asunto:** Colaboración estratégica - Impacto ambiental verificable
+
+Estimado/a [Nombre],
+
+Desde Reforestamos México queremos presentarle una oportunidad de colaboración que genera valor compartido entre su empresa y nuestras comunidades.
+
+Nuestro proyecto se enfoca en [extraído del contexto] con resultados medibles y trazables que se alinean con objetivos ESG.
+
+**Beneficios para su empresa:**
+- Indicadores verificables para reportes de sostenibilidad
+- Deducibilidad fiscal completa
+- Impacto social y ambiental documentado
+
+¿Sería posible agendar una llamada de 15 minutos esta semana para compartir más detalles?
+
+Saludos cordiales,
+[Nombre] - Reforestamos México`;
+            } else {
+                draft = `**Borrador genérico generado**
+
+Estimado/a [Nombre],
+
+Le escribo desde Reforestamos México para presentarle una oportunidad de colaboración.
+
+[Falta información específica del proyecto]
+[Necesita datos concretos y métricas]
+[Requiere definir audiencia target]
+
+Por favor mejore el contexto de entrada para obtener un borrador más específico.
+
+Saludos,
+[Nombre]`;
+            }
+
+            generatedDraft.innerHTML = `<pre class="whitespace-pre-wrap text-sm">${draft}</pre>`;
+            
+            contextWarnings.innerHTML = warnings.map(warning => 
+                `<div class="text-sm text-orange-600 bg-orange-50 p-2 rounded border">${warning}</div>`
+            ).join('');
+        }
+
+        // Atajos de teclado
+        function initKeyboardShortcuts() {
+            document.addEventListener('keydown', (e) => {
+                if (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'INPUT') return;
+                
+                if (e.key === 'ArrowLeft') {
+                    e.preventDefault();
+                    navigateSection(-1);
+                } else if (e.key === 'ArrowRight') {
+                    e.preventDefault();
+                    navigateSection(1);
+                }
+            });
+        }
+
+        // Función para copiar al portapapeles
+        function copyToClipboard(elementId) {
+            const element = document.getElementById(elementId);
+            const text = element.textContent || element.innerText;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                // Mostrar feedback visual
+                const originalText = event.target.textContent;
+                event.target.textContent = '✅ Copiado';
+                event.target.classList.add('bg-green-500');
+                
+                setTimeout(() => {
+                    event.target.textContent = originalText;
+                    event.target.classList.remove('bg-green-500');
+                }, 1500);
+            }).catch(() => {
+                // Fallback para navegadores que no soporten clipboard API
+                const textArea = document.createElement('textarea');
+                textArea.value = text;
+                document.body.appendChild(textArea);
+                textArea.focus();
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                
+                const originalText = event.target.textContent;
+                event.target.textContent = '✅ Copiado';
+                setTimeout(() => {
+                    event.target.textContent = originalText;
+                }, 1500);
+            });
+        }
+
+        // Debounce utility
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+
+        // Actualizar navegación del sidebar cuando cambia sección
+        function updateSidebarNavigation() {
+            const sidebarButtons = document.querySelectorAll('#sidebarNav button');
+            sidebarButtons.forEach((btn, index) => {
+                if (index === currentSection) {
+                    btn.classList.add('bg-green-100', 'font-semibold');
+                } else {
+                    btn.classList.remove('bg-green-100', 'font-semibold');
+                }
+            });
+        }
+
+        // Override showSection para incluir actualización del sidebar
+        const originalShowSection = showSection;
+        showSection = function(index) {
+            originalShowSection(index);
+            updateSidebarNavigation();
+        };
+
+        // Inicializar tooltips con mejor comportamiento
+        document.addEventListener('DOMContentLoaded', function() {
+            const tooltips = document.querySelectorAll('.tooltip');
+            tooltips.forEach(tooltip => {
+                const tooltipText = tooltip.querySelector('.tooltiptext');
+                if (tooltipText) {
+                    tooltip.addEventListener('mouseenter', () => {
+                        // Ajustar posición si está cerca del borde
+                        const rect = tooltip.getBoundingClientRect();
+                        const tooltipRect = tooltipText.getBoundingClientRect();
+                        
+                        if (rect.left + tooltipRect.width > window.innerWidth) {
+                            tooltipText.style.left = 'auto';
+                            tooltipText.style.right = '0';
+                            tooltipText.style.marginLeft = '0';
+                            tooltipText.style.marginRight = '-10px';
+                        }
+                    });
+                }
+            });
+        });
+
+        // Mejorar accesibilidad
+        document.addEventListener('DOMContentLoaded', function() {
+            // Agregar roles ARIA
+            document.querySelector('.progress-bar').setAttribute('role', 'progressbar');
+            document.querySelector('.progress-bar').setAttribute('aria-valuenow', '11.11');
+            document.querySelector('.progress-bar').setAttribute('aria-valuemin', '0');
+            document.querySelector('.progress-bar').setAttribute('aria-valuemax', '100');
+            
+            // Actualizar ARIA cuando cambie la sección
+            const originalUpdateProgressBar = updateProgressBar;
+            updateProgressBar = function() {
+                originalUpdateProgressBar();
+                const progress = ((currentSection + 1) / totalSections) * 100;
+                document.querySelector('.progress-bar').setAttribute('aria-valuenow', progress.toFixed(2));
+            };
+            
+            // Focus management
+            sections.forEach((section, index) => {
+                section.setAttribute('tabindex', '-1');
+            });
+        });
+
+        // Función mejorada para mostrar sección con focus management
+        const originalShowSectionWithFocus = showSection;
+        showSection = function(index) {
+            originalShowSectionWithFocus(index);
+            
+            // Mover focus a la sección actual para lectores de pantalla
+            setTimeout(() => {
+                sections[index].focus({ preventScroll: true });
+            }, 100);
+        };
+
+        // Print styles y funcionalidad
+        window.addEventListener('beforeprint', function() {
+            // Mostrar todas las secciones para impresión
+            sections.forEach(section => section.classList.remove('hidden'));
+        });
+
+        window.addEventListener('afterprint', function() {
+            // Restaurar vista de sección única
+            showSection(currentSection);
+        });
+
+        // Función para imprimir
+        function printWorkshop() {
+            window.print();
+        }
+
+        // Agregar botón de impresión si es necesario
+        document.addEventListener('DOMContentLoaded', function() {
+            const printBtn = document.createElement('button');
+            printBtn.innerHTML = '🖨️ Imprimir';
+            printBtn.className = 'fixed top-4 right-4 bg-gray-600 text-white px-3 py-2 rounded text-sm hover:bg-gray-700 no-print z-20';
+            printBtn.onclick = printWorkshop;
+            document.body.appendChild(printBtn);
+        });
+
+        // Validación de formularios mejorada
+        function validatePromptInput(input) {
+            const value = input.value.trim();
+            const feedback = input.nextElementSibling;
+            
+            if (value.length < 10) {
+                if (feedback) feedback.textContent = 'El prompt debe tener al menos 10 caracteres';
+                return false;
+            }
+            
+            if (feedback) feedback.textContent = '';
+            return true;
+        }
+
+        // Mejorar la experiencia del usuario con loading states
+        function showLoading(button) {
+            const originalText = button.textContent;
+            button.textContent = '⏳ Procesando...';
+            button.disabled = true;
+            
+            return function hideLoading() {
+                button.textContent = originalText;
+                button.disabled = false;
+            };
+        }
+
+        // Aplicar loading state al generador de borradores
+        const originalGenerateDraft = generateDraft;
+        generateDraft = function() {
+            const generateBtn = document.getElementById('generateDraft');
+            const hideLoading = showLoading(generateBtn);
+            
+            // Simular delay de procesamiento
+            setTimeout(() => {
+                originalGenerateDraft();
+                hideLoading();
+            }, 800);
+        };
+
+        // Funciones de utilidad adicionales
+        function smoothScrollToSection(index) {
+            showSection(index);
+            sections[index].scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        // Mejorar navegación con smooth scroll
+        const originalGoToSection = goToSection;
+        goToSection = function(index) {
+            originalGoToSection(index);
+            smoothScrollToSection(index);
+        };
+
+        // Detectar si el usuario prefiere menos animaciones
+        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        
+        if (prefersReducedMotion) {
+            // Remover transiciones si el usuario prefiere menos movimiento
+            document.head.insertAdjacentHTML('beforeend', `
+                <style>
+                    .transition, .sidebar, .progress-bar, .tooltip .tooltiptext {
+                        transition: none !important;
+                    }
+                </style>
+            `);
+        }
+    </script>
+</body>
+</html>
